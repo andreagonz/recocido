@@ -2,40 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/andreagonz/recocido/lote"
-	_ "github.com/mattn/go-sqlite3"
-	"log"
-	_ "os"
-	"database/sql"
+	"github.com/andreagonz/recocido/conexion"
 )
 
 func main() {
-	fmt.Printf(recocido.Reverse("lolah"))
-	
-	db, err := sql.Open("sqlite3", "./db/ciudades")
-
-	if err != nil {
-		log.Fatal(err)
+	ciudades := recocido.LeeCiudades(277)
+	for i := 0; i < len(ciudades); i++ {
+		fmt.Println(ciudades[i].Id, ciudades[i].Nombre)
 	}
-	defer db.Close()
-
-	rows, err := db.Query("select id, name from cities")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-	for rows.Next() {
-		var id int
-		var name string
-		err = rows.Scan(&id, &name)
-		if err != nil {
-			log.Fatal(err)
-		}
-		fmt.Println(id, name)
-	}
-	err = rows.Err()
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	conexiones := recocido.LeeConexiones(277)
+	fmt.Println(conexiones[260][265])
 }
