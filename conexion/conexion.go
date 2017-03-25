@@ -2,9 +2,9 @@ package recocido
 
 import (
 	"github.com/andreagonz/recocido/implementacion"
-	_"github.com/mattn/go-sqlite3"
 	"log"
 	"database/sql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // LeeCiudades lee las ciudades de la base de datos
@@ -38,12 +38,16 @@ func LeeCiudades(numCiudades int) []recocido.Ciudad {
 			log.Fatal(err)
 		}
 		ciudad := recocido.Ciudad{
-			id - 1, name,
-			country, population,
-			latitude, longitude}
+			id - 1,
+			name,
+			country,
+			population,
+			latitude,
+			longitude}
 		ciudades[i] = ciudad
 		i++
 	}
+	
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
@@ -51,10 +55,11 @@ func LeeCiudades(numCiudades int) []recocido.Ciudad {
 	return ciudades
 }
 
-func LeeConexiones(numCiudades int) [][]float64 {
-	conexiones := make([][]float64, numCiudades)
+func LeeConexiones(numCiudades int) ([][]float64, float64) {
+	sum := 0.0
+	distancias := make([][]float64, numCiudades)
 	for i := 0; i < numCiudades; i++ {
-		conexiones[i] = make([]float64, numCiudades)
+		distancias[i] = make([]float64, numCiudades)
 	}
 	
 	db, err := sql.Open("sqlite3", "./db/ciudades")
@@ -64,7 +69,7 @@ func LeeConexiones(numCiudades int) [][]float64 {
 	}
 	defer db.Close()
 
-	rows, err := db.Query("select id_city_1, id_city_2, distance from connections")
+	rows, err := db.Query("select * from connections")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -80,13 +85,13 @@ func LeeConexiones(numCiudades int) [][]float64 {
 		if err != nil {
 			log.Fatal(err)
 		}
-		conexiones[id1 - 1][id2 - 1] = distancia
+		distancias[id1 - 1][id2 - 1] = distancia
+		sum += distancia
 
 	}
 	err = rows.Err()
 	if err != nil {
 		log.Fatal(err)
 	}
-	return conexiones
-
+	return distancias, sum
 }
