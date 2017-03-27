@@ -9,6 +9,7 @@ import (
 
 var distancias *[][]float64
 var distanciasI *[][]float64
+var ciudades *[]Ciudad
 
 func SetDistancias(p *[][]float64) {
 	distancias = p
@@ -16,6 +17,10 @@ func SetDistancias(p *[][]float64) {
 
 func SetDistanciasI(p *[][]float64) {
 	distanciasI = p
+}
+
+func SetCiudades(p *[]Ciudad) {
+	ciudades = p
 }
 
 type Ciudad struct {
@@ -28,7 +33,7 @@ type Ciudad struct {
 }
 
 type Ruta struct {
-	Ciudades []Ciudad
+	Ciudades []int
 	fun float64
 }
 
@@ -40,7 +45,7 @@ func (r Ruta) Str() string {
 	s := ""
 	s += "{"
 	for i := 0; i < len(r.Ciudades); i++ {
-		s += strconv.Itoa(r.Ciudades[i].Id) + " "
+		s += "(" + strconv.Itoa(r.Ciudades[i]) + ": " + (*ciudades)[r.Ciudades[i]].Nombre + ") "
 	}
 	s += "}"
 	return s
@@ -59,7 +64,7 @@ func (ruta Ruta) ObtenVecino(rand *rand.Rand) recocido.Solucion {
 	i := rand.Intn(len(ruta.Ciudades))
 	j := rand.Intn(len(ruta.Ciudades))
 	var nruta Ruta
-	nruta.Ciudades = make([]Ciudad, len(ruta.Ciudades))
+	nruta.Ciudades = make([]int, len(ruta.Ciudades))
 	for i := 0; i < len(ruta.Ciudades); i++ {
 		nruta.Ciudades[i] = ruta.Ciudades[i]
 	}
@@ -73,7 +78,7 @@ func (ruta Ruta) ObtenVecino(rand *rand.Rand) recocido.Solucion {
 func (r *Ruta) CalculaFun() {
 	f := float64(0.0)
 	for i := 0; i < len(r.Ciudades) - 1; i++ {
-		f += (*distancias)[r.Ciudades[i].Id][r.Ciudades[i + 1].Id]
+		f += (*distancias)[r.Ciudades[i]][r.Ciudades[i + 1]]
 	}
 	r.fun = f
 }
@@ -81,7 +86,7 @@ func (r *Ruta) CalculaFun() {
 func(r Ruta) EsFactible() bool {
 	bool := true
 	for j := 0; j < len(r.Ciudades) - 1; j++ {
-		if (*distanciasI)[r.Ciudades[j].Id][r.Ciudades[j + 1].Id] == 0.0 {
+		if (*distanciasI)[r.Ciudades[j]][r.Ciudades[j + 1]] == 0.0 {
 			bool = false
 		}
 	}

@@ -3,6 +3,7 @@ package recocido
 import (
 	"fmt"
 	"math/rand"
+	"math"
 )
 
 type Solucion interface {
@@ -12,15 +13,6 @@ type Solucion interface {
 	AsignaFun(float64)
 	Str() string
 	EsFactible() bool
-}
-
-type Temperatura interface {
-	TemperaturaInicial(solucion Solucion, temperatura Temperatura, porcentaje float64)
-	PorcentajeAceptados(solucion Solucion, temperatura Temperatura)
-}
-
-type Recocido interface {
-	AceptacionPorHumbrales(temperatura Temperatura, solucion Solucion)
 }
 
 type Lote struct {
@@ -54,9 +46,9 @@ func CalculaLote(t float64, solucion Solucion, l int, rand *rand.Rand) (Lote, fl
 	for c < l {
 		s := solucion.ObtenVecino(rand)
 		s.CalculaFun()
-		fmt.Println("s' " + s.Str())
-		fmt.Println("s " + solucion.Str())
-		fmt.Println(c)
+		//fmt.Println("s' " + s.Str())
+		//fmt.Println("s " + solucion.Str())
+		//fmt.Println(c)
 		if s.ObtenFun() <= solucion.ObtenFun() + t {
 			solucion = s
 			lote.Soluciones[c] = solucion
@@ -66,4 +58,79 @@ func CalculaLote(t float64, solucion Solucion, l int, rand *rand.Rand) (Lote, fl
 		i++
 	}
 	return lote, r/float64(l), s
+}
+
+func AceptacionPorHumbrales(t float64, s Solucion, e float64, l int, rand *rand.Rand, phi float64) (Lote, Solucion) {
+	p := 1000000.0
+	var lote Lote
+	for t > e {
+		r := 0.0
+		for math.Abs(p - r) > e {
+			r = p
+			lote, p, s = CalculaLote(t, s, l, rand)
+			fmt.Println(math.Abs(p - r))
+			//fmt.Println(lote)
+			fmt.Println(e)
+		}
+		t *= phi
+		fmt.Println(t)
+	}
+	return lote, s
+}
+
+func TemperaturaInicial(s Solucion, t float64, p float64, ep float64, et float64, n int, rand *rand.Rand) float64 {
+	r := PorcentajeAceptados(s, t, n, rand)
+	t1 := 0.0
+	t2 := 0.0
+	if math.Abs(p - r) <= ep {
+		return t
+	}
+	if r < p {
+		for r < p {
+			t = 2 * t
+			r = PorcentajeAceptados(s, t, n, rand)
+		}
+		t1 = t / 2
+		t2 = t
+	} else {
+		for r > p {
+			t = t / 2
+			r = PorcentajeAceptados(s, t, n, rand)
+		}
+		t1 = t
+		t2 = 2 * t
+	}
+	//fmt.Println("bb")
+	return BusquedaBinaria(s, t1, t2, p, ep, et, n, rand)
+}
+
+func PorcentajeAceptados(s Solucion, t float64, n int, rand *rand.Rand) float64 {
+	c := 0.0
+	for i := 1; i <= n; i++ {
+		//fmt.Println(t)
+		r := s.ObtenVecino(rand)
+		r.CalculaFun()
+		s.CalculaFun()
+		if r.ObtenFun() <= s.ObtenFun() + t {
+			c++
+		}
+		s = r
+	}
+	return c/float64(n)
+}
+
+func BusquedaBinaria(s Solucion, t1 float64, t2 float64, p float64, ep float64, et float64, n int, rand *rand.Rand) float64 {
+	tm := (t1 + t2) / 2
+	if t2 - t1 < et {
+		return tm
+	}
+	r := PorcentajeAceptados(s, tm, n, rand)
+	if math.Abs(p - r) < ep {
+		return tm
+	}
+	if r > p {
+		return BusquedaBinaria(s, t1, tm, p, ep, et, n, rand)
+	} else {
+		return BusquedaBinaria(s, tm, t2, p, ep, et, n, rand)
+	}
 }
