@@ -1,7 +1,7 @@
 package recocido
 
 import (
-	"fmt"
+	_"fmt"
 	"math/rand"
 	"math"
 )
@@ -10,6 +10,7 @@ type Solucion interface {
 	ObtenVecino(*rand.Rand) Solucion
 	CalculaFun()
 	ObtenFun() float64
+	ObtenFunObj() float64
 	AsignaFun(float64)
 	Str() string
 	EsFactible() bool
@@ -19,20 +20,17 @@ type Lote struct {
 	Soluciones []Solucion
 }
 
-func (lote Lote) CalculaFunciones() {
-	max := 0.0
-	min := 100000000.0
-	for i := 0; i < len(lote.Soluciones); i++ {
-		if max < lote.Soluciones[i].ObtenFun() {
-			max = lote.Soluciones[i].ObtenFun()
-		}
-		if min > lote.Soluciones[i].ObtenFun() {
-			min = lote.Soluciones[i].ObtenFun()
+func (l Lote) PorcentajeFactibles() float64 {
+	c := 0.0
+	for i := 0; i < len(l.Soluciones); i++ {
+		if l.Soluciones[i].EsFactible() {
+			c++
 		}
 	}
-	for i := 0; i < len(lote.Soluciones); i++ {
-		lote.Soluciones[i].AsignaFun((lote.Soluciones[i].ObtenFun() - min) / (max - min))
+	if c == 0.0 {
+		return 0
 	}
+	return c / float64(len(l.Soluciones))
 }
 
 func CalculaLote(t float64, solucion Solucion, l int, rand *rand.Rand) (Lote, float64, Solucion) {
@@ -44,11 +42,8 @@ func CalculaLote(t float64, solucion Solucion, l int, rand *rand.Rand) (Lote, fl
 	solucion.CalculaFun()
 	i := 0
 	for c < l {
-		s := solucion.ObtenVecino(rand)
+		s = solucion.ObtenVecino(rand)
 		s.CalculaFun()
-		//fmt.Println("s' " + s.Str())
-		//fmt.Println("s " + solucion.Str())
-		//fmt.Println(c)
 		if s.ObtenFun() <= solucion.ObtenFun() + t {
 			solucion = s
 			lote.Soluciones[c] = solucion
@@ -67,13 +62,9 @@ func AceptacionPorHumbrales(t float64, s Solucion, e float64, l int, rand *rand.
 		r := 0.0
 		for math.Abs(p - r) > e {
 			r = p
-			lote, p, s = CalculaLote(t, s, l, rand)
-			fmt.Println(math.Abs(p - r))
-			//fmt.Println(lote)
-			fmt.Println(e)
+			lote, p, s = CalculaLote(t, s, l, rand)			
 		}
 		t *= phi
-		fmt.Println(t)
 	}
 	return lote, s
 }
