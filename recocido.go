@@ -66,23 +66,24 @@ func ImprimeLote(l heu.Lote) {
 
 func main() {
 
-	seed := int64(5)
+	seed := int64(7)
 	numCiudades := 277
-	tProblema := 30
+	tProblema := 9
 	tLote := 200
 	t := 8.0
-	p := 0.85
-	ep := 0.91
-	et := 0.9
+	p := 0.9
+	ep := 0.9
+	et := 0.1
 	e := 0.1
 	phi := 0.95
 	c := 10
-
+	
 	r := rand.New(rand.NewSource(seed))
 	ciudades := con.LeeCiudades(numCiudades)
 	distancias, _ := con.LeeConexiones(numCiudades)	
-	problema := ProblemaAleatorio(tProblema, &ciudades, &distancias, r)
-	
+	//problema := ProblemaAleatorio(tProblema, &ciudades, &distancias, r)
+
+	problema := []int{0,1,6,13,25,26,30,32,36}
 	imp.SetDistancias(&distancias)
 	imp.SetCiudades(&ciudades)
 	imp.SetProblema(&problema)

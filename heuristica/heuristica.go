@@ -56,7 +56,7 @@ func CalculaLote(t float64, solucion Solucion, l int, rand *rand.Rand) (Lote, fl
 }
 
 func AceptacionPorHumbrales(t float64, s Solucion, e float64, l int, rand *rand.Rand, phi float64) (Lote, Solucion) {
-	p := 1000000.0
+	p := 999999999999.0
 	var lote Lote
 	for t > e {
 		r := 0.0
