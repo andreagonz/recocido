@@ -1,11 +1,11 @@
 package recocido
 
 import (
-	"fmt"
+	_"fmt"
 	"math/rand"
 	"math"
 	_"os"
-	"strconv"
+//	"strconv"
 )
 
 type Solucion interface {
@@ -65,16 +65,16 @@ func AceptacionPorHumbrales(t float64, s Solucion, mejor Solucion, e float64, ep
 		r := 0.0
 		i := 0
 		for math.Abs(p - r) > ep && i < l * l {
-			fmt.Println("abs p-r: " + strconv.FormatFloat(math.Abs(p - r), 'f', 6, 64))
+			//fmt.Println("abs p-r: " + strconv.FormatFloat(math.Abs(p - r), 'f', 6, 64))
 			r = p
 			lote, p, s, mejor = CalculaLote(t, s, mejor, l, rand)
-			fmt.Println("ep: " + strconv.FormatFloat(ep, 'f', 6, 64))
+			//fmt.Println("ep: " + strconv.FormatFloat(ep, 'f', 6, 64))
 			i++
 		}
 		t *= phi
-		fmt.Println(mejor)
-		fmt.Println("t: " + strconv.FormatFloat(t, 'f', 6, 64))
-		fmt.Println("e: " + strconv.FormatFloat(e, 'f', 6, 64))
+		//fmt.Println(mejor)
+		//fmt.Println("t: " + strconv.FormatFloat(t, 'f', 6, 64))
+		//fmt.Println("e: " + strconv.FormatFloat(e, 'f', 6, 64))
 	}
 	return lote, mejor, p
 }

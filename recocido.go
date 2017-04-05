@@ -39,6 +39,12 @@ func ImprimeLote(l heu.Lote) {
 	}
 }
 
+func check(e error) {
+    if e != nil {
+        panic(e)
+    }
+}
+
 func main() {
 
 	seed := int64(11)
@@ -54,17 +60,17 @@ func main() {
 	
 	r := rand.New(rand.NewSource(seed))
 	ciudades := con.LeeCiudades(numCiudades)
-	distancias, _ := con.LeeConexiones(numCiudades)
+	distancias := con.LeeConexiones(numCiudades)
 	//problema := ProblemaAleatorio(tProblema, &ciudades, &distancias, r)
 
-	/*
+	
 	problema := []int{1, 5, 9, 12, 16, 22, 23, 29, 30, 31, 39, 48, 52, 56, 58, 62, 65, 66, 70, 75, 80, 84, 86, 90, 92, 94, 95, 101, 107, 117, 119, 122, 133, 135, 143, 144, 146, 147, 150, 158, 159, 160, 166, 167, 176, 178, 179, 185, 186, 188, 190, 191, 194, 198, 200, 203, 207, 209, 213, 215, 216, 220, 221, 224, 227, 232, 233, 235, 238, 241, 244, 248, 250, 254, 264, 266, 274, 276}
 	
 	for i := 0; i < len(problema); i++ {
 		problema[i] = problema[i] - 1
 	}
-*/	
-	problema := []int{25,36,13,6,0,26,30,1,32}
+	
+	//problema := []int{25,36,13,6,0,26,30,1,32}
 	
 	imp.SetDistancias(&distancias)
 	imp.SetCiudades(&ciudades)
@@ -77,8 +83,14 @@ func main() {
 	fmt.Println()	
 	sol.CalculaFun()
 
-	lote, mejor, p := heu.Recocido(&sol, e, ep, et, p, tLote, r, phi)
-	
+	for i := 0; i < 50; i++ {
+	    r = rand.New(rand.NewSource(int64(i)))
+	    _, mejor, _ := heu.Recocido(&sol, e, ep, et, p, tLote, r, phi)
+	    fmt.Println(mejor)
+	    fmt.Println(mejor.EsFactible())
+	}
+
+/*
 	//fmt.Println("APH calculada")
 	fmt.Println("Mejor sol")
 	fmt.Println(mejor.Str())
@@ -91,4 +103,5 @@ func main() {
 	fmt.Println("% factibles")
 	fmt.Println(lote.PorcentajeFactibles())
 	ImprimeLote(lote)
+	*/
 }

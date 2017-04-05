@@ -114,13 +114,15 @@ func(r Ruta) EsFactible() bool {
 func MaxAvg() {
 	n := 0.0
 	p := 0.0
-	for i := 1; i < len(*problema); i++ {
-		if (*distancias)[(*problema)[i - 1]][(*problema)[i]] > 0.0 {
-			if (*distancias)[(*problema)[i - 1]][(*problema)[i]] > Max {
-				Max = (*distancias)[(*problema)[i - 1]][(*problema)[i]]
+	for i := 0; i < len(*problema); i++ {
+	    for j := 0; j < len(*problema); j++ {
+		if (*distancias)[(*problema)[i]][(*problema)[j]] > 0.0 {
+			if (*distancias)[(*problema)[i]][(*problema)[j]] > Max {
+				Max = (*distancias)[(*problema)[i]][(*problema)[j]]
 			}
-			p += (*distancias)[(*problema)[i - 1]][(*problema)[i]]
+			p += (*distancias)[(*problema)[i]][(*problema)[j]]
 			n++
+		}
 		}
 	}
 	Avg = p / n
