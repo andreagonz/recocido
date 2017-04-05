@@ -1,7 +1,7 @@
 package recocido
 
 import (
-	_ "fmt"
+	_"fmt"
 	"strconv"
 	"math/rand"
 	"github.com/andreagonz/recocido/heuristica"
@@ -10,8 +10,8 @@ import (
 var distancias *[][]float64
 var ciudades *[]Ciudad
 var problema *[]int
-var max float64
-var avg float64
+var Max float64
+var Avg float64
 var c int
 
 func SetDistancias(p *[][]float64) {
@@ -62,27 +62,37 @@ func (r Ruta) Str() string {
 	return s
 }
 
+/*
+func (r Ruta) Str() string {
+	s := ""
+	s += "{"
+	for i := 0; i < len(r.Ciudades); i++ {
+		s += strconv.Itoa(i) + ": " + strconv.Itoa(r.Ciudades[i]) + " "
+	}
+	s += "}"
+	return s
+}
+*/
+
 func (r Ruta) ObtenFun() float64 {
 	return r.fun
 }
-
 
 func (r Ruta) ObtenFunObj() float64 {
 	return r.funObj
 }
 
-func (r Ruta) AsignaFun(f float64) {
-	r.fun = f
-}
-
 func (ruta Ruta) ObtenVecino(rand *rand.Rand) recocido.Solucion {
 	//fmt.Println(ruta.Str())
-	i := rand.Intn(len(ruta.Ciudades))
-	j := rand.Intn(len(ruta.Ciudades))
 	var nruta Ruta
 	nruta.Ciudades = make([]int, len(ruta.Ciudades))
 	for i := 0; i < len(ruta.Ciudades); i++ {
 		nruta.Ciudades[i] = ruta.Ciudades[i]
+	}
+	i := rand.Intn(len(ruta.Ciudades))
+	j := rand.Intn(len(ruta.Ciudades))
+	for j == i {
+		j = rand.Intn(len(ruta.Ciudades))
 	}
 	a := nruta.Ciudades[i]
 	nruta.Ciudades[i] = nruta.Ciudades[j]
@@ -106,25 +116,25 @@ func MaxAvg() {
 	p := 0.0
 	for i := 1; i < len(*problema); i++ {
 		if (*distancias)[(*problema)[i - 1]][(*problema)[i]] > 0.0 {
-			if (*distancias)[(*problema)[i - 1]][(*problema)[i]] > max {
-				max = (*distancias)[(*problema)[i - 1]][(*problema)[i]]
+			if (*distancias)[(*problema)[i - 1]][(*problema)[i]] > Max {
+				Max = (*distancias)[(*problema)[i - 1]][(*problema)[i]]
 			}
 			p += (*distancias)[(*problema)[i - 1]][(*problema)[i]]
 			n++
 		}
 	}
-	avg = p / n
+	Avg = p / n
 }
 
 func (r *Ruta) CalculaFun() {
 	f := 0.0
-	for i := 1; i < len(r.Ciudades) - 1; i++ {
+	for i := 1; i < len(r.Ciudades); i++ {
 		if (*distancias)[(r.Ciudades)[i - 1]][(r.Ciudades)[i]] > 0.0 {
 			f += (*distancias)[r.Ciudades[i - 1]][r.Ciudades[i]]
 		} else {
-			f += max * float64(c)
+			f += Max * float64(c)
 		}
 	}
 	r.funObj = f
-	r.fun = f / (avg * float64((len(r.Ciudades)) - 1))
+	r.fun = f / (Avg * float64((len(r.Ciudades)) - 1))
 }

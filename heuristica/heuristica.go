@@ -4,6 +4,7 @@ import (
 	_"fmt"
 	"math/rand"
 	"math"
+	_"os"
 )
 
 type Solucion interface {
@@ -11,7 +12,6 @@ type Solucion interface {
 	CalculaFun()
 	ObtenFun() float64
 	ObtenFunObj() float64
-	AsignaFun(float64)
 	Str() string
 	EsFactible() bool
 }
@@ -33,40 +33,43 @@ func (l Lote) PorcentajeFactibles() float64 {
 	return c / float64(len(l.Soluciones))
 }
 
-func CalculaLote(t float64, solucion Solucion, l int, rand *rand.Rand) (Lote, float64, Solucion) {
+func CalculaLote(t float64, solucion Solucion, mejor Solucion, l int, rand *rand.Rand) (Lote, float64, Solucion, Solucion) {
 	var c = 0
 	var r = 0.0
 	var s Solucion
 	var lote Lote
 	lote.Soluciones = make([]Solucion, l)
-	solucion.CalculaFun()
+	//solucion.CalculaFun()
 	i := 0
 	for c < l {
 		s = solucion.ObtenVecino(rand)
 		s.CalculaFun()
-		if s.ObtenFun() <= solucion.ObtenFun() + t {
+		if s.ObtenFun() <= solucion.ObtenFun() + t  || (i > l * l) {
 			solucion = s
 			lote.Soluciones[c] = solucion
 			c++
-			r += solucion.ObtenFun()
+			r += s.ObtenFun()
+			if mejor.ObtenFun() > s.ObtenFun() {
+				mejor = s				
+			}
 		}
 		i++
 	}
-	return lote, r/float64(l), s
+	return lote, r/float64(l), s, mejor
 }
 
-func AceptacionPorHumbrales(t float64, s Solucion, e float64, l int, rand *rand.Rand, phi float64) (Lote, Solucion) {
+func AceptacionPorHumbrales(t float64, s Solucion, mejor Solucion, e float64, l int, rand *rand.Rand, phi float64) (Lote, Solucion, float64, Solucion) {
 	p := 999999999999.0
 	var lote Lote
 	for t > e {
 		r := 0.0
 		for math.Abs(p - r) > e {
 			r = p
-			lote, p, s = CalculaLote(t, s, l, rand)			
+			lote, p, s, mejor = CalculaLote(t, s, mejor, l, rand)
 		}
 		t *= phi
 	}
-	return lote, s
+	return lote, s, p, mejor
 }
 
 func TemperaturaInicial(s Solucion, t float64, p float64, ep float64, et float64, n int, rand *rand.Rand) float64 {
@@ -97,11 +100,11 @@ func TemperaturaInicial(s Solucion, t float64, p float64, ep float64, et float64
 
 func PorcentajeAceptados(s Solucion, t float64, n int, rand *rand.Rand) float64 {
 	c := 0.0
+	s.CalculaFun()
 	for i := 1; i <= n; i++ {
 		//fmt.Println(t)
 		r := s.ObtenVecino(rand)
 		r.CalculaFun()
-		s.CalculaFun()
 		if r.ObtenFun() <= s.ObtenFun() + t {
 			c++
 		}

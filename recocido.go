@@ -8,31 +8,6 @@ import (
 	imp "github.com/andreagonz/recocido/implementacion"
 )
 
-/*
-func ProblemaAleatorio(t int, ciudades *[]imp.Ciudad, distancias *[][]float64, r *rand.Rand) []int {
-	p := make([]int, t)
-	x := r.Intn(len(*ciudades))
-	for i := 0; i < t; i++ {
-		g := 1
-		y := r.Intn(len(*ciudades))
-		c := 0
-		for (*distancias)[x % len(*ciudades)][y % len(*ciudades)] == 0.0 {
-			y++
-			c++
-			if c == len(*ciudades) {
-				x = p[i - g]
-				c = 0
-				g--
-			}
-		}
-		p[i] = x % len(*ciudades)
-		x = y % len(*ciudades)
-		fmt.Println(x)
-	}
-	return p
-}
-*/
-
 func ProblemaAleatorio(t int, ciudades *[]imp.Ciudad, distancias *[][]float64, r *rand.Rand) []int {
 	var pila imp.Pila
 	p := make([]int, t)
@@ -66,38 +41,71 @@ func ImprimeLote(l heu.Lote) {
 
 func main() {
 
-	seed := int64(7)
+	seed := int64(11)
 	numCiudades := 277
-	tProblema := 9
-	tLote := 200
+	tProblema := 78
+	_ = tProblema
+	tLote := 300
 	t := 8.0
 	p := 0.9
-	ep := 0.9
+	ep := 0.1
 	et := 0.1
 	e := 0.1
-	phi := 0.95
-	c := 10
+	phi := 0.98
+	c := 5
 	
 	r := rand.New(rand.NewSource(seed))
 	ciudades := con.LeeCiudades(numCiudades)
-	distancias, _ := con.LeeConexiones(numCiudades)	
+	distancias, _ := con.LeeConexiones(numCiudades)
 	//problema := ProblemaAleatorio(tProblema, &ciudades, &distancias, r)
 
-	problema := []int{0,1,6,13,25,26,30,32,36}
+	
+	problema := []int{1, 5, 9, 12, 16, 22, 23, 29, 30, 31, 39, 48, 52, 56, 58, 62, 65, 66, 70, 75, 80, 84, 86, 90, 92, 94, 95, 101, 107, 117, 119, 122, 133, 135, 143, 144, 146, 147, 150, 158, 159, 160, 166, 167, 176, 178, 179, 185, 186, 188, 190, 191, 194, 198, 200, 203, 207, 209, 213, 215, 216, 220, 221, 224, 227, 232, 233, 235, 238, 241, 244, 248, 250, 254, 264, 266, 274, 276}
+
+	for i := 0; i < len(problema); i++ {
+		problema[i] = problema[i] - 1
+	}
+
+	//problema := []int{0,1,6,13,25,26,30,32,36}
+	
 	imp.SetDistancias(&distancias)
 	imp.SetCiudades(&ciudades)
 	imp.SetProblema(&problema)
 	imp.SetC(c)
 	imp.MaxAvg()
 
+	fmt.Println("Max")
+	fmt.Println(imp.Max)
+	fmt.Println("Avg")
+	fmt.Println(imp.Avg)
+	f := 0.0
+	for i := 1; i < len(problema) - 1; i++ {
+		if distancias[problema[i - 1]][problema[i]] > 0.0 {
+			f += distancias[problema[i - 1]][problema[i]]
+		} else {
+			f += imp.Max * float64(c)
+		}
+	}
+	
 	sol := imp.Ruta{Ciudades : problema}
 	fmt.Println(sol.Str())
+	fmt.Println(f)
 	fmt.Println()
-	lote, _, _ := heu.CalculaLote(00.0, &sol, tLote, r)	
-	t = heu.TemperaturaInicial(&sol, t, p, ep, et, tProblema, r)
-	lote, mejorS := heu.AceptacionPorHumbrales(t, &sol, e, tProblema, r, phi)
-	fmt.Println(mejorS.Str())
-	fmt.Println(mejorS.ObtenFunObj())
-	fmt.Println(mejorS.ObtenFun())
+	sol.CalculaFun()
+	lote, _, _, mejor := heu.CalculaLote(00.0, &sol, &sol, tLote, r)
+	fmt.Println("Lote calculado")
+	t = heu.TemperaturaInicial(&sol, t, p, ep, et, tLote, r)
+	fmt.Println("Temp calculada")
+	lote, _, p, mejor = heu.AceptacionPorHumbrales(t, &sol, mejor, e, tLote, r, phi)
+	fmt.Println("APH calculada")
+	fmt.Println("Mejor sol")
+	fmt.Println(mejor.Str())
+	fmt.Println("Mejor dist")
+	fmt.Println(mejor.ObtenFunObj())
+	fmt.Println("Mejor costo")
+	fmt.Println(mejor.ObtenFun())
+	fmt.Println("Costo prom")
+	fmt.Println(p)
+	fmt.Println("% factibles")
 	fmt.Println(lote.PorcentajeFactibles())
 }
