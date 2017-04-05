@@ -35,13 +35,11 @@ func (l Lote) PorcentajeFactibles() float64 {
 }
 
 func CalculaLote(t float64, solucion Solucion, mejor Solucion, l int, rand *rand.Rand) (Lote, float64, Solucion, Solucion) {
-	var c = 1
+	var c = 0
 	var r = 0.0
 	var s Solucion
 	var lote Lote
 	lote.Soluciones = make([]Solucion, l)
-	lote.Soluciones[0] = mejor
-	//solucion.CalculaFun()
 	i := 0
 	for c < l {
 		s = solucion.ObtenVecino(rand)
