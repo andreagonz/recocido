@@ -1,10 +1,11 @@
 package recocido
 
 import (
-	_"fmt"
+	"fmt"
 	"math/rand"
 	"math"
 	_"os"
+	"strconv"
 )
 
 type Solucion interface {
@@ -34,11 +35,12 @@ func (l Lote) PorcentajeFactibles() float64 {
 }
 
 func CalculaLote(t float64, solucion Solucion, mejor Solucion, l int, rand *rand.Rand) (Lote, float64, Solucion, Solucion) {
-	var c = 0
+	var c = 1
 	var r = 0.0
 	var s Solucion
 	var lote Lote
 	lote.Soluciones = make([]Solucion, l)
+	lote.Soluciones[0] = mejor
 	//solucion.CalculaFun()
 	i := 0
 	for c < l {
@@ -58,18 +60,25 @@ func CalculaLote(t float64, solucion Solucion, mejor Solucion, l int, rand *rand
 	return lote, r/float64(l), s, mejor
 }
 
-func AceptacionPorHumbrales(t float64, s Solucion, mejor Solucion, e float64, l int, rand *rand.Rand, phi float64) (Lote, Solucion, float64, Solucion) {
+func AceptacionPorHumbrales(t float64, s Solucion, mejor Solucion, e float64, ep float64, l int, rand *rand.Rand, phi float64) (Lote, Solucion, float64) {
 	p := 999999999999.0
 	var lote Lote
 	for t > e {
 		r := 0.0
-		for math.Abs(p - r) > e {
+		i := 0
+		for math.Abs(p - r) > ep && i < l * l {
+			fmt.Println("abs p-r: " + strconv.FormatFloat(math.Abs(p - r), 'f', 6, 64))
 			r = p
 			lote, p, s, mejor = CalculaLote(t, s, mejor, l, rand)
+			fmt.Println("ep: " + strconv.FormatFloat(ep, 'f', 6, 64))
+			i++
 		}
 		t *= phi
+		fmt.Println(mejor)
+		fmt.Println("t: " + strconv.FormatFloat(t, 'f', 6, 64))
+		fmt.Println("e: " + strconv.FormatFloat(e, 'f', 6, 64))
 	}
-	return lote, s, p, mejor
+	return lote, mejor, p
 }
 
 func TemperaturaInicial(s Solucion, t float64, p float64, ep float64, et float64, n int, rand *rand.Rand) float64 {
@@ -127,4 +136,9 @@ func BusquedaBinaria(s Solucion, t1 float64, t2 float64, p float64, ep float64, 
 	} else {
 		return BusquedaBinaria(s, tm, t2, p, ep, et, n, rand)
 	}
+}
+
+func Recocido(s Solucion, e float64, ep float64, et float64, p float64, l int, rand *rand.Rand, phi float64) (Lote, Solucion, float64) {
+	t := TemperaturaInicial(s, 8, p, ep, et, l, rand)
+	return AceptacionPorHumbrales(t, s, s, e, ep, l, rand, phi)
 }
