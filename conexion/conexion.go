@@ -55,7 +55,7 @@ func LeeCiudades(numCiudades int) []recocido.Ciudad {
 	return ciudades
 }
 
-func LeeConexiones(numCiudades int) ([][]float64, float64) {
+func LeeConexiones(numCiudades int) [][]float64 {
 	sum := 0.0
 	distancias := make([][]float64, numCiudades)
 	for i := 0; i < numCiudades; i++ {
@@ -86,6 +86,7 @@ func LeeConexiones(numCiudades int) ([][]float64, float64) {
 			log.Fatal(err)
 		}
 		distancias[id1 - 1][id2 - 1] = distancia
+		distancias[id2 - 1][id1 - 1] = distancia
 		sum += distancia
 
 	}
@@ -93,5 +94,5 @@ func LeeConexiones(numCiudades int) ([][]float64, float64) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return distancias, sum
+	return distancias
 }
