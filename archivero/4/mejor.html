@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name='viewport'content='initial-scale=1.0, user-scalable=no'>
+<meta charset='utf-8'>
+<title>Mapa</title>
+<style>
+#map {
+height: 100%;
+}
+html, body {
+height: 100%;
+margin: 0;
+padding: 0;
+}
+</style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+function initMap() {
+ var map = new google.maps.Map(document.getElementById('map'), {
+zoom: 3,
+center: {lat: 0, lng: -180},
+mapTypeId: 'terrain'
+});
+var flightPlanCoordinates = [
+{lat: 49.25, lng: -123.133333},
+{lat: 34.0522222, lng: -118.2427778},
+{lat: 32.7152778, lng: -117.1563889},
+{lat: 32.533333, lng: -117.016667},
+{lat: 33.4483333, lng: -112.0733333},
+{lat: 31.733333, lng: -106.483333},
+{lat: 29.4238889, lng: -98.4933333},
+{lat: 29.7630556, lng: -95.3630556},
+{lat: 41.85, lng: -87.65},
+{lat: 43.666667, lng: -79.416667},
+{lat: 45.5, lng: -73.583333},
+{lat: 18.5391667, lng: -72.335},
+{lat: 18.4666667, lng: -69.9},
+{lat: 10.5, lng: -66.9166667},
+{lat: -3.113333, lng: -60.025278},
+{lat: -1.45, lng: -48.483333},
+{lat: -3.316667, lng: -41.416667},
+{lat: -8.05, lng: -34.9},
+{lat: 8.49, lng: -13.2341667},
+{lat: 12.65, lng: -8},
+{lat: 12.3702778, lng: -1.5247222},
+{lat: 5.55, lng: -0.2166667},
+{lat: 6.453056, lng: 3.395833},
+{lat: 7.387778, lng: 3.896389},
+{lat: 6.335045, lng: 5.627492},
+{lat: 4.777423, lng: 7.013404},
+{lat: 4.0502778, lng: 9.7},
+{lat: 11.846441, lng: 13.160274},
+{lat: 3.8666667, lng: 11.5166667},
+{lat: -4.2591667, lng: 15.2847222},
+{lat: -4.3, lng: 15.3},
+{lat: -11.666667, lng: 27.466667},
+{lat: -17.8177778, lng: 31.0447222},
+{lat: -25.9652778, lng: 32.5891667},
+{lat: -15.4166667, lng: 28.2833333},
+{lat: -6.8, lng: 39.2833333},
+{lat: -1.2833333, lng: 36.8166667},
+{lat: 21.426667, lng: 39.826111},
+{lat: 24.653664, lng: 46.71522},
+{lat: 25.258172, lng: 55.304717},
+{lat: 29.6036, lng: 52.5388},
+{lat: 36.297, lng: 59.6062},
+{lat: 34.516667, lng: 69.183333},
+{lat: 34.008, lng: 71.578488},
+{lat: 33.6007, lng: 73.0679},
+{lat: 32.161667, lng: 74.188309},
+{lat: 31.549722, lng: 74.343611},
+{lat: 31.633056, lng: 74.865556},
+{lat: 30.9, lng: 75.85},
+{lat: 28.666667, lng: 77.216667},
+{lat: 28.666667, lng: 77.433333},
+{lat: 27.183333, lng: 78.016667},
+{lat: 26.466667, lng: 80.35},
+{lat: 26.85, lng: 80.916667},
+{lat: 25.45, lng: 81.85},
+{lat: 25.333333, lng: 83},
+{lat: 25.6, lng: 85.116667},
+{lat: 22.589167, lng: 88.310278},
+{lat: 22.569722, lng: 88.369722},
+{lat: 22.8, lng: 89.55},
+{lat: 23.7230556, lng: 90.4086111},
+{lat: 22, lng: 96.0833333},
+{lat: 16.7833333, lng: 96.1666667},
+{lat: 21.033333, lng: 105.85},
+{lat: 26.583333, lng: 106.716667},
+{lat: 23.116667, lng: 113.25},
+{lat: 22.533333, lng: 114.133333},
+{lat: 23.528858, lng: 116.364159},
+{lat: 22.6177778, lng: 120.3013889},
+{lat: 22.6333333, lng: 120.35},
+{lat: 24.1433333, lng: 120.6813889},
+{lat: 25.0391667, lng: 121.525},
+{lat: 37.5985, lng: 126.9783},
+{lat: 34.434844, lng: 132.740622},
+{lat: 34.691304, lng: 135.182995},
+{lat: 35.180198, lng: 136.906739},
+{lat: 35.520556, lng: 139.717222},
+{lat: 35.685, lng: 139.751389}      ];
+      var flightPath = new google.maps.Polyline({
+      path: flightPlanCoordinates,
+      geodesic: true,
+      strokeColor: '#FF0000',
+      strokeOpacity: 1.0,
+      strokeWeight: 2
+      });      
+      flightPath.setMap(map);
+      }
+    </script>
+    <script async defer
+            src='https://maps.googleapis.com/maps/api/js?key=AIzaSyDdBAKYa4kQqUStHeV39ngfUVZwRAl84bk&callback=initMap'>
+    </script>
+  </body>
+</html>
