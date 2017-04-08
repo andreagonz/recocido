@@ -5,6 +5,8 @@ import (
 	imp "github.com/andreagonz/recocido/implementacion"
 )
 
+// Mapa recibe la representación en cadena de una ruta y un arreglo de ciudades.
+// Regresa una cadena con el mapa de la ruta en HTML usando Google Maps.
 func Mapa(ruta string, ciudades *[]imp.Ciudad) string {
 	r := CadenaARuta(ruta)
 	s := "<!DOCTYPE html>\n<html>\n<head>\n<meta name='viewport'content='initial-scale=1.0, user-scalable=no'>\n<meta charset='utf-8'>\n<title>Mapa</title>\n<style>\n#map {\nheight: 100%;\n}\nhtml, body {\nheight: 100%;\nmargin: 0;\npadding: 0;\n}\n</style>\n</head>\n<body>\n<div id='map'></div>\n<script>\nfunction initMap() {\n var map = new google.maps.Map(document.getElementById('map'), {\nzoom: 3,\ncenter: {lat: 0, lng: -180},\nmapTypeId: 'terrain'\n});\nvar flightPlanCoordinates = [\n"

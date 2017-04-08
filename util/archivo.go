@@ -14,12 +14,14 @@ func check(e error) {
     }
 }
 
+// EscribeArchivo recibe una cadena y crea un archivo donde la escribe.
 func EscribeArchivo(s string, nombre string) {
 	d1 := []byte(s)
 	err := ioutil.WriteFile(nombre, d1, 0644)
 	check(err)
 }
 
+// LeeArchivo lee un archivo y lo regresa como cadena.
 func LeeArchivo(nom string) string {
 	if _, err := os.Stat(nom); os.IsNotExist(err) {
 		return ""
@@ -29,6 +31,8 @@ func LeeArchivo(nom string) string {
 	return string(dat)
 }
 
+// CadenaARuta recibe una ruta en forma de cadena y la regresa como
+// un arreglo de enteros.
 func CadenaARuta(ruta string) []int {
 	r := strings.Replace(ruta, ", ", " ", -1)
 	l := strings.Fields(r)
@@ -41,6 +45,8 @@ func CadenaARuta(ruta string) []int {
 	return res
 }
 
+// CadenaParametros recibe los parametros del recocido y regresa su
+// representación en cadena.
 func CadenaParametros(seed int64, tLote int, p float64, ep float64, et float64, e float64, phi float64, c int) string {
 	s := ""
 	s += fmt.Sprintf("Semilla: %d\n", seed)

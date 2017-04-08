@@ -55,6 +55,8 @@ func LeeCiudades(numCiudades int) []recocido.Ciudad {
 	return ciudades
 }
 
+// LeeConexiones lee las conexiones de las ciudades de la base de datos y
+// regresa la matriz de adyacencias.
 func LeeConexiones(numCiudades int) [][]float64 {
 	sum := 0.0
 	distancias := make([][]float64, numCiudades)

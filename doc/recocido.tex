@@ -1,0 +1,73 @@
+%Especificacion
+\documentclass[12pt]{article}
+
+%Paquetes
+\usepackage[left=2cm,right=2cm,top=3cm,bottom=3cm,letterpaper]{geometry}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,activeacute]{babel}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{enumerate}
+%\usepackage{tabularx}
+%\usepackage{wasysym}
+\usepackage{graphicx}
+%\graphicspath { {tarea01/media/} }
+%\usepackage{pifont}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{alltt}
+
+%Preambulo
+\title{Seminario de Heurísticas de Optimización Combinatoria \\ Recocido Simulado con Aceptación por Umbrales}
+\author{Andrea Itzel González Vargas}
+\date{Facultad de Ciencias UNAM}
+
+\setlength\parindent{0pt}
+
+\begin{document}
+\maketitle
+Para implementar el proyecto se utilizo en lenguaje de programación Go junto con el manejador de bases de datos SQLITE3.
+\subsubsection{Ejecución del programa}
+Para ejecutar el programa se adjunta la imagen de máquina virtual de QEMU \textsf{manjaro.img}. Lo único que se tiene que hacer es correr la máquina con
+\begin{verbatim}
+    qemu-system-x86_64 -hda manjaro.img -m <memoria en bytes>
+\end{verbatim}
+Una vez que se haya abierto la máquina, se deberá de ir al directorio \textsf{~go/src/github/andreagonz/recocido}, donde se debe de correr \textsf{go build}, lo cual creará el archivo ejecutable \textsf{recocido}. \\
+El comando para correr el programa es el siguiente:
+\begin{verbatim}
+    ./recocido <archivo.tsp> <params.txt> [ops]
+\end{verbatim}
+donde \textsf{<archivo.tsp>} es el archivo con el conjunto de ciudades cuya ruta mínima quiere encontrarse. El formato de éste archivo es escribir los índices de las ciudades como están en la base de datos separados por una coma y un espacio. Por ejemplo:
+\begin{verbatim}
+26, 37, 14, 7, 1, 27, 31, 2, 33
+\end{verbatim}
+\textsf{<params.txt>} es el archivo donde se especifican que parámetros se usarán para la ejecución. El formato del archivo es el siguiente:
+\begin{alltt}
+\{int: Semilla\}
+\{int: Tamaño del lote\}
+\{double: P\}
+\{double: \(\epsilon\sb{p}\)\}
+\{double: \(\epsilon\sb{t}\)\}
+\{double: \(\epsilon\)\}
+\{double: \(\phi\)\}
+\{int: C\}
+\end{alltt}
+donde \textsf{\{t: X\}} es la representación numérica de \textsf{X}, es decir de cada parámetro, si \textsf{t} es \textsf{int} sólo se aceptarán números enteros, si es \textsf{double} se permite también decimales. Ejemplo:
+\begin{verbatim}
+30
+500
+0.9
+0.001
+0.0001
+0.001
+0.9
+5
+\end{verbatim}
+Por último, \textsf{[ops]} son los parámetros opcionales del programa, hay dos de estos: \\
+\textsf{-g}: Permite que se cree la gráfica de soluciones aceptadas. Se hará un archivo \textsf{costos.txt} y un archivo \textsf{costos.png}. \\
+
+\textsf{-m}: Crea la representación en mapa de la ruta en el archivo \textsf{mapa.html}, donde se utiliza Google Maps. \\
+
+\end{document}
