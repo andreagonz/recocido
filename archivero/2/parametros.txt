@@ -1,9 +1,0 @@
-Parámetros
-Semilla: 1
-Tamaño lote: 500
-p: 0.900000
-ep: 0.001000
-et: 0.010000
-e: 0.001000
-phi: 0.900000
-C: 5
