@@ -80,6 +80,7 @@ func main() {
 		fmt.Println("Factible: " + strconv.FormatBool(mejor.EsFactible()))
 		fmt.Println("Costo: " + strconv.FormatFloat(mejor.ObtenFun(), 'f', -1, 64))
 		fmt.Println("Distancia: " + strconv.FormatFloat(mejor.ObtenFunObj(), 'f', -1, 64))
+		util.EscribeArchivo(mejor.Str(), "ruta.tsp")
 	}
 	
 }
