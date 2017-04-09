@@ -27,16 +27,52 @@
 \begin{document}
 \maketitle
 En este proyecto se implementó la heurística del recocido simulado con aceptación por umbrales para la resolución del problema del agente viajero. Se cuenta con una base de datos en donde se guardan las ciudades a tomar en cuenta junto con sus respectivas conexiones con otras ciudades. \\
-Para implementar el proyecto se utilizó en lenguaje de programación Go junto con el manejador de bases de datos SQLite3. \\
-El repositorio del proyecto está en \url{https://github.com/andreagonz/recocido}
-\subsection{Ejecución del programa}
-Para poder ejecutar el programa se adjunta la imagen de máquina virtual de QEMU \textsf{manjaro.img}. Lo único que se tiene que hacer es correr la máquina con
+
+Se utilizó el lenguaje de programación Go junto con el manejador de bases de datos SQLite3. \\
+El repositorio del proyecto está en \url{https://github.com/andreagonz/recocido} \\
+
+Hay dos opciones para correr el programa, una es descargar la imagen de QEMU adjunta \textsf{manjaro.img} \footnote{Si de algo sirve, la contraseña de root es ``chepe''.} y la otra es hacer una instalación propia usando \href{https://sourceforge.net/projects/manjarolinux/files/archive/16.10.1/xfce/manjaro-xfce-16.10.1-stable-x86_64.iso}{manjaro-xfce-16.10.1-stable-x86\_64.iso}.
+
+\subsection{Instalación}
+Si decidió descargar la imagen \textsf{manjaro.img} no se tiene que instalar nada, basta con abrir la máquina virtual con
 \begin{verbatim}
     qemu-system-x86_64 -hda manjaro.img -m <memoria en bytes>
 \end{verbatim}
-Si de algo sirve, la contraseña de root es ``chepe''.
-Una vez que se haya abierto la máquina, se deberá de ir al directorio \textsf{$\sim$/go/src/github.com/andreagonz/recocido}, donde se debe de correr \textsf{go build}, lo cual creará el archivo ejecutable \textsf{recocido}. \\
-El comando para correr el programa es el siguiente:
+
+En el caso contrario, una vez instalada la versión correspondiente de manjaro, se debe de hacer lo siguiente: 
+
+\begin{verbatim}
+    sudo pacman -S git
+    sudo pacman -S mercurial
+    sudo pacman -S go
+    mkdir ~/go
+    mkdir ~/go/bin
+    mkdir ~/go/src
+    mkdir ~/go/src/github.com
+    mkdir ~/go/src/github.com/andreagonz
+\end{verbatim}
+\newpage
+Escribir al final del archivo \textsf{$\sim$/.bashrc}:
+\begin{verbatim}
+    export GOPATH=$HOME/go
+    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+\end{verbatim}
+Reiniciar terminal y correr
+\begin{verbatim}
+    go get golang.org/x/tools/cmd/godoc
+    go get github.com/gonum/plot
+    go get github.com/mattn/go-sqlite3
+    cd ~/go/src/github.com/andreagonz
+    git clone https://github.com/andreagonz/recocido
+\end{verbatim}
+
+\subsection{Ejecución del programa}
+
+Una vez se tenga corriendo manjaro ya sea con la imagen proporcionada o con instalación propia, se debe de seguir los siguientes pasos para ejecutar el proyecto: \\
+
+Ir al directorio \textsf{$\sim$/go/src/github.com/andreagonz/recocido} y ejecutar el comando \textsf{go build}, lo cual creará el archivo ejecutable \textsf{recocido}. \\
+
+El paso siguiente es correr el proyecto con
 \begin{verbatim}
     ./recocido <archivo.tsp> <params.txt> [ops]
 \end{verbatim}
