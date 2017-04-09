@@ -66,7 +66,7 @@ func main() {
 		if bGrafica {
 			var buffer bytes.Buffer
 			for f := listaFun.Front(); f != nil; f = f.Next() {
-				buffer.WriteString(fmt.Sprintf("E : %.9f\n", f.Value))
+				buffer.WriteString(fmt.Sprintf("E: %.9f\n", f.Value))
 			}
 			util.EscribeArchivo(buffer.String(), "costos.txt")
 			util.GraficaCosto(listaFun)
@@ -76,7 +76,8 @@ func main() {
 			mapa := util.Mapa(mejor.Str(), &ciudades)
 			util.EscribeArchivo(mapa, "mapa.html")
 		}
-		
+
+		fmt.Println("Mejor solución")
 		fmt.Println("Factible: " + strconv.FormatBool(mejor.EsFactible()))
 		fmt.Println("Costo: " + strconv.FormatFloat(mejor.ObtenFun(), 'f', -1, 64))
 		fmt.Println("Distancia: " + strconv.FormatFloat(mejor.ObtenFunObj(), 'f', -1, 64))

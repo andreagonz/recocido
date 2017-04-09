@@ -54,21 +54,6 @@ type Ruta struct {
 	fun float64
 }
 
-/*
-func (r Ruta) Str() string {
-	s := ""
-	s += "{"
-	for i := 0; i < len(r.Ciudades); i++ {
-		s += "(" + strconv.Itoa(r.Ciudades[i]) + ": " + (*ciudades)[r.Ciudades[i]].Nombre + ") "
-		if i < len(r.Ciudades) - 1 {
-			s += strconv.FormatFloat((*distancias)[r.Ciudades[i]][r.Ciudades[i + 1]], 'f', -1, 64) + " "
-		}
-	}
-	s += "}"
-	return s
-}
-*/
-
 // Str devuelve una representación en cadena de la ruta.
 func (r Ruta) Str() string {
 	s := ""

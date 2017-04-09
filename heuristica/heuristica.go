@@ -114,9 +114,8 @@ func BusquedaBinaria(s Solucion, t1 float64, t2 float64, p float64, ep float64, 
 	}
 	if r > p {
 		return BusquedaBinaria(s, t1, tm, p, ep, et, n, rand)
-	} else {
-		return BusquedaBinaria(s, tm, t2, p, ep, et, n, rand)
 	}
+	return BusquedaBinaria(s, tm, t2, p, ep, et, n, rand)
 }
 
 // Recocido ejecuta el algoritmo de recocido simulado con aceptación por humbrales.
