@@ -69,7 +69,7 @@ func main() {
 				buffer.WriteString(fmt.Sprintf("E: %.9f\n", f.Value))
 			}
 			util.EscribeArchivo(buffer.String(), "costos.txt")
-			util.GraficaCosto(listaFun)
+			util.GraficaCosto(listaFun, tLote)
 		}
 
 		if bMapa {

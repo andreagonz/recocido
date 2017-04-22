@@ -11,13 +11,16 @@ import (
 
 // GraficaCosto crea una gráfica con el costo de las
 // soluciones aceptadas.
-func GraficaCosto(lst *list.List) {
-	pts := make(plotter.XYs, lst.Len())
-	i := 0.0
-	
+func GraficaCosto(lst *list.List, l int) {
+	pts := make(plotter.XYs, lst.Len() / l)
+	i := 0
+	j := 0
 	for f := lst.Front(); f != nil; f = f.Next() {
-		pts[int(i)].X = i
-		pts[int(i)].Y = f.Value.(float64)
+		if (i % l == 0) && j < (lst.Len() / l) {
+			pts[j].X = float64(i)
+			pts[j].Y = f.Value.(float64)
+			j++
+		}
 		i++
 	}		
 
@@ -34,10 +37,9 @@ func GraficaCosto(lst *list.List) {
 	}
 	s.GlyphStyle.Color = color.RGBA{R: 255, B: 128, A: 255}
 
-	p.NominalX("")
 	p.Add(s)
 
-	if err := p.Save(15*vg.Inch, 10*vg.Inch, "costos.png"); err != nil {
+	if err := p.Save(18*vg.Inch, 10*vg.Inch, "costos.svg"); err != nil {
 		panic(err)
 	}
 }
