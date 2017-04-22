@@ -8,12 +8,13 @@ import (
 
 // Solucion es una interfaz para una solucion del problema
 type Solucion interface {
-	ObtenVecino(*rand.Rand) Solucion
+	ObtenVecino(*rand.Rand, float64, bool) bool
 	CalculaFun()
 	ObtenFun() float64
 	ObtenFunObj() float64
 	Str() string
 	EsFactible() bool
+	Copia() Solucion
 }
 
 // CalculaLote calcula las soluciones de un lote.
@@ -21,25 +22,21 @@ type Solucion interface {
 func CalculaLote(t float64, solucion Solucion, mejor Solucion, l int, rand *rand.Rand, lista *list.List, bGrafica bool) (float64, Solucion, Solucion) {
 	var c = 0
 	var r = 0.0
-	var s Solucion
 	i := 0
 	for c < l {
-		s = solucion.ObtenVecino(rand)
-		s.CalculaFun()
-		if s.ObtenFun() <= solucion.ObtenFun() + t  || (i > l * l) {
-			solucion = s
-			if c % l == 0 && bGrafica {
-				(*lista).PushBack(s.ObtenFun())
+		if solucion.ObtenVecino(rand, t, i > l * l) || (i > l * l) {
+			if bGrafica {
+				(*lista).PushBack(solucion.ObtenFun())
 			}
 			c++
-			r += s.ObtenFun()
-			if mejor.ObtenFun() > s.ObtenFun() {
-				mejor = s				
+			r += solucion.ObtenFun()
+			if mejor.ObtenFun() > solucion.ObtenFun() {
+				mejor = solucion.Copia()
 			}
 		}
 		i++
 	}
-	return r/float64(l), s, mejor
+	return r/float64(l), solucion, mejor
 }
 
 // AceptacionPorUmbrales ejecuta el algoritmo de aceptación por umbrales a partir de una
@@ -88,16 +85,13 @@ func TemperaturaInicial(s Solucion, t float64, p float64, ep float64, et float64
 }
 
 // PorcentajeAceptados calcula el porcentaje de soluciones aceptadas en un rango.
-func PorcentajeAceptados(s Solucion, t float64, n int, rand *rand.Rand) float64 {
+func PorcentajeAceptados(sol Solucion, t float64, n int, rand *rand.Rand) float64 {
 	c := 0.0
-	s.CalculaFun()
+	s := sol.Copia()
 	for i := 1; i <= n; i++ {
-		r := s.ObtenVecino(rand)
-		r.CalculaFun()
-		if r.ObtenFun() <= s.ObtenFun() + t {
+		if s.ObtenVecino(rand, t, true) {
 			c++
 		}
-		s = r
 	}
 	return c/float64(n)
 }
@@ -121,5 +115,5 @@ func BusquedaBinaria(s Solucion, t1 float64, t2 float64, p float64, ep float64, 
 // Recocido ejecuta el algoritmo de recocido simulado con aceptación por humbrales.
 func Recocido(s Solucion, e float64, ep float64, et float64, p float64, l int, rand *rand.Rand, phi float64, lista *list.List, bGrafica bool) (Solucion, float64) {
 	t := TemperaturaInicial(s, 8, p, ep, et, l, rand)
-	return AceptacionPorUmbrales(t, s, s, e, ep, l, rand, phi, lista, bGrafica)
+	return AceptacionPorUmbrales(t, s.Copia(), s.Copia(), e, ep, l, rand, phi, lista, bGrafica)
 }

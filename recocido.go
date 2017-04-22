@@ -76,7 +76,7 @@ func main() {
 			mapa := util.Mapa(mejor.Str(), &ciudades)
 			util.EscribeArchivo(mapa, "mapa.html")
 		}
-
+		mejor.CalculaFun()
 		fmt.Println("Mejor solución")
 		fmt.Println("Factible: " + strconv.FormatBool(mejor.EsFactible()))
 		fmt.Println("Costo: " + strconv.FormatFloat(mejor.ObtenFun(), 'f', -1, 64))

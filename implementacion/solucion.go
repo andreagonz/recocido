@@ -3,6 +3,7 @@ package recocido
 import (
 	"strconv"
 	"math/rand"
+	"math"
 	"github.com/andreagonz/recocido/heuristica"
 )
 
@@ -77,21 +78,49 @@ func (r Ruta) ObtenFunObj() float64 {
 }
 
 // ObtenVecino devuelve una ruta vecina a la ruta r.
-func (r Ruta) ObtenVecino(rand *rand.Rand) recocido.Solucion {
-	var nruta Ruta
-	nruta.Ciudades = make([]int, len(r.Ciudades))
-	for i := 0; i < len(r.Ciudades); i++ {
-		nruta.Ciudades[i] = r.Ciudades[i]
-	}
+func (r *Ruta) ObtenVecino(rand *rand.Rand, t float64, cond bool) bool {
+	esMejor := false
 	i := rand.Intn(len(r.Ciudades))
 	j := rand.Intn(len(r.Ciudades))
 	for j == i {
 		j = rand.Intn(len(r.Ciudades))
 	}
-	a := nruta.Ciudades[i]
-	nruta.Ciudades[i] = nruta.Ciudades[j]
-	nruta.Ciudades[j] = a
-	return &nruta
+	
+	fo := r.funObj
+
+	may := int(math.Max(float64(i), float64(j)))
+	men := int(math.Min(float64(i), float64(j)))
+
+	if may - men > 1 {
+		fo -= r.getDistancia(men, men + 1)
+		fo -= r.getDistancia(may - 1, may)
+		fo += r.getDistancia(may, men + 1)
+		fo += r.getDistancia(may - 1, men)	
+	}		
+	if may < len(r.Ciudades) - 1 {
+		fo -= r.getDistancia(may, may + 1)
+		fo += r.getDistancia(men, may + 1)
+	}
+	if men > 0 {
+		fo -= r.getDistancia(men - 1, men)
+		fo += r.getDistancia(men - 1, may)
+	}
+
+	f := fo / (avg * float64((len(r.Ciudades)) - 1))
+
+	if f <= r.fun + t {
+		esMejor = true
+	}
+
+	if esMejor || cond {
+		a := r.Ciudades[i]
+		r.Ciudades[i] = r.Ciudades[j]
+		r.Ciudades[j] = a
+		r.fun = f
+		r.funObj = fo
+	}
+
+	return esMejor
 }
 
 // EsFactible dice si la ruta r es factible.
@@ -124,17 +153,31 @@ func MaxAvg() {
 	avg = p / n
 }
 
+// Regresa la distancia* entre la ciudad i y la ciudad j
+func (r Ruta) getDistancia(i int, j int) float64 {
+	if (*distancias)[(r.Ciudades)[i]][(r.Ciudades)[j]] > 0.0 {
+		return (*distancias)[(r.Ciudades)[i]][(r.Ciudades)[j]]
+	} else {
+		return max * float64(c)
+	}
+}
+
 // CalculaFun calcula la función de costo y la distancia de
 // la ruta r.
 func (r *Ruta) CalculaFun() {
 	f := 0.0
 	for i := 1; i < len(r.Ciudades); i++ {
-		if (*distancias)[(r.Ciudades)[i - 1]][(r.Ciudades)[i]] > 0.0 {
-			f += (*distancias)[r.Ciudades[i - 1]][r.Ciudades[i]]
-		} else {
-			f += max * float64(c)
-		}
+		f += r.getDistancia(i - 1, i)
 	}
 	r.funObj = f
 	r.fun = f / (avg * float64((len(r.Ciudades)) - 1))
+}
+
+func (r Ruta) Copia() recocido.Solucion {
+	c := make([]int, len(r.Ciudades))
+	for i := 0; i < len(r.Ciudades); i++ {
+		c[i] = r.Ciudades[i]
+	}
+	ruta := Ruta{c, r.funObj, r.fun}
+	return &ruta
 }
